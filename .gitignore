@@ -1,10 +1,14 @@
+# Environments
 venv/
 env/
+
+# Python cache files
 __pycache__/
-*.pyc
-db.sqlite3
-.media/
-staticfiles/
-.env
-.vscode/
-.idea/
+*.py[cod]
+*$py.class
+
+# Database
+*.sqlite3
+
+# OS generated files
+.DS_Store
