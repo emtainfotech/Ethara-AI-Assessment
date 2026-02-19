@@ -2,73 +2,88 @@
 
 {% block content %}
 <div class="mb-8">
-    <h2 class="text-3xl font-bold text-gray-800">Admin Dashboard</h2>
-    <p class="text-gray-500 mt-1">Overview of today's HR metrics.</p>
+    <h2 class="text-3xl font-bold text-gray-800 tracking-tight">Admin Dashboard</h2>
+    <p class="text-gray-500 mt-1 text-sm">Overview of today's HR metrics and daily summary.</p>
 </div>
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 flex items-center">
-        <div class="w-12 h-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xl mr-4">
+    <div class="bg-white rounded-2xl shadow-sm hover:shadow-md p-6 border border-gray-100 flex items-center transition-all transform hover:-translate-y-1">
+        <div class="w-14 h-14 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-2xl mr-4 shadow-inner">
             <i class="fa-solid fa-users"></i>
         </div>
         <div>
-            <p class="text-sm text-gray-500 font-medium">Total Employees</p>
-            <h3 class="text-2xl font-bold text-gray-800" id="statTotal">-</h3>
+            <p class="text-sm text-gray-500 font-medium uppercase tracking-wider text-xs mb-1">Total Employees</p>
+            <h3 class="text-3xl font-bold text-gray-800" id="statTotal">-</h3>
         </div>
     </div>
 
-    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 flex items-center">
-        <div class="w-12 h-12 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-xl mr-4">
+    <div class="bg-white rounded-2xl shadow-sm hover:shadow-md p-6 border border-gray-100 flex items-center transition-all transform hover:-translate-y-1">
+        <div class="w-14 h-14 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl mr-4 shadow-inner">
             <i class="fa-solid fa-user-check"></i>
         </div>
         <div>
-            <p class="text-sm text-gray-500 font-medium">Present Today</p>
-            <h3 class="text-2xl font-bold text-gray-800" id="statPresent">-</h3>
+            <p class="text-sm text-gray-500 font-medium uppercase tracking-wider text-xs mb-1">Present Today</p>
+            <h3 class="text-3xl font-bold text-gray-800" id="statPresent">-</h3>
         </div>
     </div>
 
-    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 flex items-center">
-        <div class="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-xl mr-4">
+    <div class="bg-white rounded-2xl shadow-sm hover:shadow-md p-6 border border-gray-100 flex items-center transition-all transform hover:-translate-y-1">
+        <div class="w-14 h-14 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center text-2xl mr-4 shadow-inner">
             <i class="fa-solid fa-user-xmark"></i>
         </div>
         <div>
-            <p class="text-sm text-gray-500 font-medium">Absent Today</p>
-            <h3 class="text-2xl font-bold text-gray-800" id="statAbsent">-</h3>
+            <p class="text-sm text-gray-500 font-medium uppercase tracking-wider text-xs mb-1">Absent Today</p>
+            <h3 class="text-3xl font-bold text-gray-800" id="statAbsent">-</h3>
         </div>
     </div>
 
-    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 flex items-center">
-        <div class="w-12 h-12 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center text-xl mr-4">
-            <i class="fa-solid fa-clock"></i>
+    <div class="bg-white rounded-2xl shadow-sm hover:shadow-md p-6 border border-gray-100 flex items-center transition-all transform hover:-translate-y-1">
+        <div class="w-14 h-14 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center text-2xl mr-4 shadow-inner">
+            <i class="fa-solid fa-clock-rotate-left"></i>
         </div>
         <div>
-            <p class="text-sm text-gray-500 font-medium">Pending Action</p>
-            <h3 class="text-2xl font-bold text-gray-800" id="statUnmarked">-</h3>
+            <p class="text-sm text-gray-500 font-medium uppercase tracking-wider text-xs mb-1">Pending Action</p>
+            <h3 class="text-3xl font-bold text-gray-800" id="statUnmarked">-</h3>
         </div>
     </div>
 </div>
 
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-        <h4 class="font-bold text-gray-800 mb-4">Attendance Overview (Today)</h4>
-        <div class="relative h-64">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    
+    <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <div class="flex justify-between items-center mb-6">
+            <h4 class="font-bold text-gray-800 text-lg">Attendance Overview (Today)</h4>
+            <span class="text-xs bg-gray-100 text-gray-600 px-3 py-1 rounded-full font-medium"><i class="fa-solid fa-circle text-indigo-500 mr-1 text-[10px]"></i> Live Data</span>
+        </div>
+        <div class="relative h-64 w-full flex justify-center">
             <canvas id="attendanceChart"></canvas>
         </div>
     </div>
 
-    <div class="bg-gradient-to-br from-slate-800 to-slate-900 p-6 rounded-xl shadow-lg text-white flex flex-col justify-between">
-        <div>
-            <h4 class="font-bold text-xl mb-2">Quick Actions</h4>
-            <p class="text-gray-400 text-sm mb-6">Manage your daily HR tasks efficiently.</p>
-        </div>
+    <div class="bg-gradient-to-br from-indigo-900 to-indigo-950 p-8 rounded-2xl shadow-lg text-white flex flex-col justify-between relative overflow-hidden">
+        <i class="fa-solid fa-bolt absolute -bottom-4 -right-4 text-indigo-800/30 text-9xl"></i>
         
-        <div class="space-y-3">
-            <a href="/employees/" class="block w-full bg-white/10 hover:bg-white/20 transition p-3 rounded-lg flex items-center">
-                <i class="fa-solid fa-plus-circle w-8"></i> Add New Employee
-            </a>
-            <a href="/attendance-ui/" class="block w-full bg-white/10 hover:bg-white/20 transition p-3 rounded-lg flex items-center">
-                <i class="fa-solid fa-clipboard-check w-8"></i> Mark Attendance
-            </a>
+        <div class="relative z-10">
+            <h4 class="font-bold text-2xl mb-2">Quick Actions</h4>
+            <p class="text-indigo-200 text-sm mb-8">Manage your daily HR tasks efficiently without leaving the dashboard.</p>
+            
+            <div class="space-y-4">
+                <a href="/employees/" class="block w-full bg-white/10 hover:bg-white/20 border border-white/10 transition-all p-4 rounded-xl flex items-center shadow-sm backdrop-blur-sm group">
+                    <div class="bg-white/20 p-2 rounded-lg mr-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-user-plus w-5 text-center"></i>
+                    </div>
+                    <span class="font-medium tracking-wide text-sm">Add New Employee</span>
+                    <i class="fa-solid fa-chevron-right ml-auto text-xs opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all"></i>
+                </a>
+                
+                <a href="/attendance-ui/" class="block w-full bg-white/10 hover:bg-white/20 border border-white/10 transition-all p-4 rounded-xl flex items-center shadow-sm backdrop-blur-sm group">
+                    <div class="bg-white/20 p-2 rounded-lg mr-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-clipboard-check w-5 text-center"></i>
+                    </div>
+                    <span class="font-medium tracking-wide text-sm">Mark Attendance</span>
+                    <i class="fa-solid fa-chevron-right ml-auto text-xs opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all"></i>
+                </a>
+            </div>
         </div>
     </div>
 </div>
@@ -84,11 +99,11 @@
             const res = await fetch('/api/stats/');
             const data = await res.json();
 
-            // Update Numbers
-            document.getElementById('statTotal').innerText = data.total_employees;
-            document.getElementById('statPresent').innerText = data.present_today;
-            document.getElementById('statAbsent').innerText = data.absent_today;
-            document.getElementById('statUnmarked').innerText = data.unmarked;
+            // Animate Numbers (Simple counter effect)
+            animateValue("statTotal", 0, data.total_employees, 1000);
+            animateValue("statPresent", 0, data.present_today, 1000);
+            animateValue("statAbsent", 0, data.absent_today, 1000);
+            animateValue("statUnmarked", 0, data.unmarked, 1000);
 
             // Render Chart
             const ctx = document.getElementById('attendanceChart').getContext('2d');
@@ -98,15 +113,24 @@
                     labels: ['Present', 'Absent', 'Pending'],
                     datasets: [{
                         data: [data.present_today, data.absent_today, data.unmarked],
-                        backgroundColor: ['#22c55e', '#ef4444', '#eab308'],
-                        borderWidth: 0
+                        backgroundColor: ['#10b981', '#f43f5e', '#f59e0b'], // Emerald, Rose, Amber to match Tailwind colors
+                        borderWidth: 0,
+                        hoverOffset: 4
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    cutout: '70%', // Makes the donut thinner and more modern
                     plugins: {
-                        legend: { position: 'bottom' }
+                        legend: { 
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true,
+                                font: { family: "'Poppins', sans-serif", size: 12 }
+                            }
+                        }
                     }
                 }
             });
@@ -116,6 +140,25 @@
         }
     }
 
-    loadStats();
+    // Number counting animation
+    function animateValue(id, start, end, duration) {
+        if (start === end) {
+            document.getElementById(id).innerText = end;
+            return;
+        }
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            document.getElementById(id).innerText = Math.floor(progress * (end - start) + start);
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            }
+        };
+        window.requestAnimationFrame(step);
+    }
+
+    // Call stats after loader finishes to ensure smooth rendering
+    setTimeout(loadStats, 400); 
 </script>
 {% endblock %}

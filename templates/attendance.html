@@ -2,8 +2,8 @@
 
 {% block content %}
 <div class="mb-6">
-    <h2 class="text-3xl font-bold text-gray-800">Attendance Tracker</h2>
-    <p class="text-gray-500 mt-1">Mark and view daily attendance records.</p>
+    <h2 class="text-3xl font-bold text-gray-800 tracking-tight">Attendance Tracker</h2>
+    <p class="text-gray-500 mt-1 text-sm">Mark and view daily attendance records.</p>
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -15,14 +15,17 @@
             <form id="attendanceForm">
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Employee</label>
-                    <select id="attEmpId" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition bg-white">
-                        <option value="">Select Employee...</option>
-                        </select>
+                    <div class="relative">
+                        <i class="fa-solid fa-user absolute left-3 top-2.5 text-gray-400 text-sm"></i>
+                        <select id="attEmpId" class="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition bg-white text-sm" required>
+                            <option value="">Select Employee...</option>
+                            </select>
+                    </div>
                 </div>
 
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
-                    <input type="date" id="attDate" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition">
+                    <input type="date" id="attDate" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition text-sm" required>
                     <p class="text-red-500 text-xs mt-1 hidden" id="error-date">Cannot mark future dates.</p>
                 </div>
 
@@ -31,37 +34,62 @@
                     <div class="grid grid-cols-2 gap-3">
                         <label class="cursor-pointer">
                             <input type="radio" name="status" value="Present" class="peer sr-only" checked>
-                            <div class="rounded-lg border border-gray-200 p-2 text-center peer-checked:bg-green-50 peer-checked:border-green-500 peer-checked:text-green-700 transition hover:bg-gray-50">
-                                <i class="fa-solid fa-check-circle mb-1"></i><br>Present
+                            <div class="rounded-lg border border-gray-200 p-2 text-center peer-checked:bg-green-50 peer-checked:border-green-500 peer-checked:text-green-700 transition hover:bg-gray-50 text-sm">
+                                <i class="fa-solid fa-check-circle mb-1 text-lg"></i><br>Present
                             </div>
                         </label>
                         <label class="cursor-pointer">
                             <input type="radio" name="status" value="Absent" class="peer sr-only">
-                            <div class="rounded-lg border border-gray-200 p-2 text-center peer-checked:bg-red-50 peer-checked:border-red-500 peer-checked:text-red-700 transition hover:bg-gray-50">
-                                <i class="fa-solid fa-times-circle mb-1"></i><br>Absent
+                            <div class="rounded-lg border border-gray-200 p-2 text-center peer-checked:bg-red-50 peer-checked:border-red-500 peer-checked:text-red-700 transition hover:bg-gray-50 text-sm">
+                                <i class="fa-solid fa-times-circle mb-1 text-lg"></i><br>Absent
                             </div>
                         </label>
                     </div>
                 </div>
 
-                <button type="submit" class="w-full bg-slate-900 text-white py-3 rounded-lg hover:bg-slate-800 transition shadow-lg font-medium">
-                    Submit Record
+                <button type="submit" class="w-full bg-indigo-600 text-white py-2.5 rounded-lg hover:bg-indigo-700 transition shadow-md font-medium text-sm flex justify-center items-center gap-2">
+                    <i class="fa-solid fa-calendar-plus"></i> Submit Record
                 </button>
             </form>
         </div>
     </div>
 
-    <div class="lg:col-span-2">
-        <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+    <div class="lg:col-span-2 flex flex-col gap-4">
+        
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex flex-col md:flex-row gap-4">
+            <div class="flex-1 relative">
+                <i class="fa-solid fa-search absolute left-4 top-2.5 text-gray-400"></i>
+                <input type="text" id="filterName" class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition text-sm" placeholder="Search employee name...">
+            </div>
+            
+            <div class="w-full md:w-40 relative">
+                <input type="date" id="filterDateSearch" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition text-sm text-gray-600" title="Filter by Date">
+            </div>
+
+            <div class="w-full md:w-40 relative">
+                <i class="fa-solid fa-filter absolute left-3 top-2.5 text-gray-400 text-sm"></i>
+                <select id="filterStatus" class="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition text-sm bg-white cursor-pointer">
+                    <option value="">All Status</option>
+                    <option value="Present">Present</option>
+                    <option value="Absent">Absent</option>
+                </select>
+            </div>
+            
+            <button onclick="clearFilters()" class="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition text-sm font-medium" title="Clear Filters">
+                <i class="fa-solid fa-rotate-right"></i>
+            </button>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-200">
             <div class="px-6 py-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
-                <h3 class="font-semibold text-gray-700">Recent Records</h3>
-                <span class="text-xs text-gray-500 bg-white border px-2 py-1 rounded">Ordered by Date</span>
+                <h3 class="font-semibold text-gray-700 text-sm">Attendance Records</h3>
+                <span id="recordCount" class="text-xs text-indigo-600 bg-indigo-50 font-medium border border-indigo-100 px-3 py-1 rounded-full">0 Records Found</span>
             </div>
             
             <div class="overflow-x-auto">
                 <table class="w-full text-left">
                     <thead>
-                        <tr class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
+                        <tr class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider border-b border-gray-200">
                             <th class="px-6 py-3 font-semibold">Employee</th>
                             <th class="px-6 py-3 font-semibold">Date</th>
                             <th class="px-6 py-3 font-semibold text-center">Status</th>
@@ -71,8 +99,21 @@
                         </tbody>
                 </table>
             </div>
+
+            <div id="emptyState" class="hidden flex flex-col items-center justify-center p-10 text-center">
+                <div class="bg-gray-50 p-4 rounded-full mb-3">
+                    <i class="fa-regular fa-calendar-xmark text-3xl text-gray-400"></i>
+                </div>
+                <h3 class="text-base font-medium text-gray-900">No records match your filters</h3>
+                <p class="text-gray-500 text-sm mt-1">Try changing the date, status, or search term.</p>
+            </div>
         </div>
     </div>
+</div>
+
+<div id="toast" class="fixed top-20 right-5 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg transform -translate-y-10 opacity-0 transition-all duration-300 flex items-center gap-3 z-50 pointer-events-none">
+    <i id="toastIcon" class="fa-solid fa-circle-check text-green-400"></i>
+    <span id="toastMessage">Action Successful</span>
 </div>
 
 {% endblock %}
@@ -81,55 +122,137 @@
 <script>
     const EMP_API = '/api/employees/';
     const ATT_API = '/api/attendance/';
+    
+    let allAttendance = []; // Store records locally for fast filtering
 
-    // --- Date Validation Setup ---
+    // --- Toast Notification Logic ---
+    function showToast(msg, type = 'success') {
+        const toast = document.getElementById('toast');
+        const icon = document.getElementById('toastIcon');
+        const text = document.getElementById('toastMessage');
+
+        text.innerText = msg;
+        if (type === 'error') {
+            icon.className = "fa-solid fa-circle-xmark text-red-400";
+        } else {
+            icon.className = "fa-solid fa-circle-check text-green-400";
+        }
+
+        toast.classList.remove('-translate-y-10', 'opacity-0');
+        setTimeout(() => toast.classList.add('-translate-y-10', 'opacity-0'), 3000);
+    }
+
+    // --- Date Validation Setup for Form ---
     const dateInput = document.getElementById('attDate');
     const today = new Date().toISOString().split('T')[0];
-    dateInput.max = today; // Native HTML constraint
-    dateInput.value = today; // Default to today
+    dateInput.max = today; 
+    dateInput.value = today; 
 
     dateInput.addEventListener('change', () => {
         const errorMsg = document.getElementById('error-date');
         if (dateInput.value > today) {
             errorMsg.classList.remove('hidden');
             dateInput.classList.add('border-red-500', 'bg-red-50');
-            dateInput.value = today; // Auto-reset
+            dateInput.value = today; 
         } else {
             errorMsg.classList.add('hidden');
             dateInput.classList.remove('border-red-500', 'bg-red-50');
         }
     });
 
-    // --- Load Data ---
+    // --- Load Employees for Dropdown ---
     async function loadEmployeeOptions() {
-        const res = await fetch(EMP_API);
-        const data = await res.json();
-        const select = document.getElementById('attEmpId');
-        data.forEach(emp => {
-            select.innerHTML += `<option value="${emp.id}">${emp.full_name} (${emp.employee_id})</option>`;
-        });
+        try {
+            const res = await fetch(EMP_API);
+            const data = await res.json();
+            const select = document.getElementById('attEmpId');
+            data.forEach(emp => {
+                select.innerHTML += `<option value="${emp.id}">${emp.full_name} (${emp.employee_id})</option>`;
+            });
+        } catch (error) {
+            console.error("Failed to load employees");
+        }
     }
 
+    // --- Load Attendance Records ---
     async function loadAttendance() {
-        const res = await fetch(ATT_API);
-        const data = await res.json();
+        try {
+            const res = await fetch(ATT_API);
+            allAttendance = await res.json();
+            applyFilters(); // Render table utilizing current filters
+        } catch (error) {
+            console.error("Failed to load attendance");
+        }
+    }
+
+    // --- Filtering Logic ---
+    function applyFilters() {
+        const nameFilter = document.getElementById('filterName').value.toLowerCase();
+        const dateFilter = document.getElementById('filterDateSearch').value;
+        const statusFilter = document.getElementById('filterStatus').value;
+
+        const filteredData = allAttendance.filter(att => {
+            const matchesName = att.employee_name.toLowerCase().includes(nameFilter);
+            const matchesDate = dateFilter === "" || att.date === dateFilter;
+            const matchesStatus = statusFilter === "" || att.status === statusFilter;
+            
+            return matchesName && matchesDate && matchesStatus;
+        });
+
+        renderTable(filteredData);
+    }
+
+    function renderTable(dataToRender) {
         const tbody = document.getElementById('attendanceTableBody');
-        tbody.innerHTML = '';
+        const emptyState = document.getElementById('emptyState');
+        const recordCount = document.getElementById('recordCount');
         
-        data.forEach(att => {
+        tbody.innerHTML = '';
+        recordCount.innerText = `${dataToRender.length} Records Found`;
+
+        if (dataToRender.length === 0) {
+            emptyState.classList.remove('hidden');
+            return;
+        }
+        
+        emptyState.classList.add('hidden');
+
+        dataToRender.forEach(att => {
             const statusBadge = att.status === 'Present' 
-                ? '<span class="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">Present</span>'
-                : '<span class="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200">Absent</span>';
+                ? '<span class="px-3 py-1 rounded-full text-xs font-semibold bg-green-50 text-green-700 border border-green-200"><i class="fa-solid fa-check mr-1"></i>Present</span>'
+                : '<span class="px-3 py-1 rounded-full text-xs font-semibold bg-red-50 text-red-700 border border-red-200"><i class="fa-solid fa-xmark mr-1"></i>Absent</span>';
+
+            // Format date nicely (e.g., Feb 19, 2026)
+            const dateObj = new Date(att.date);
+            const formattedDate = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
             tbody.innerHTML += `
-                <tr class="hover:bg-gray-50 transition">
-                    <td class="px-6 py-4 text-sm font-medium text-gray-900">${att.employee_name}</td>
-                    <td class="px-6 py-4 text-sm text-gray-500">${att.date}</td>
+                <tr class="hover:bg-gray-50 transition border-b border-gray-50 last:border-0 group">
+                    <td class="px-6 py-4 text-sm font-medium text-gray-900 flex items-center gap-3">
+                        <div class="h-8 w-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-xs shadow-sm">
+                            ${att.employee_name.charAt(0).toUpperCase()}
+                        </div>
+                        ${att.employee_name}
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-600"><i class="fa-regular fa-calendar text-gray-400 mr-2"></i>${formattedDate}</td>
                     <td class="px-6 py-4 text-center">${statusBadge}</td>
                 </tr>
             `;
         });
     }
+
+    function clearFilters() {
+        document.getElementById('filterName').value = '';
+        document.getElementById('filterDateSearch').value = '';
+        document.getElementById('filterStatus').value = '';
+        applyFilters();
+    }
+
+    // Attach Event Listeners to Filters
+    document.getElementById('filterName').addEventListener('input', applyFilters);
+    document.getElementById('filterDateSearch').addEventListener('change', applyFilters);
+    document.getElementById('filterStatus').addEventListener('change', applyFilters);
+
 
     // --- Submit Logic ---
     document.getElementById('attendanceForm').addEventListener('submit', async (e) => {
@@ -137,7 +260,7 @@
         
         const empId = document.getElementById('attEmpId').value;
         if(!empId) {
-            Swal.fire('Error', 'Please select an employee', 'warning');
+            showToast('Please select an employee.', 'error');
             return;
         }
 
@@ -147,35 +270,37 @@
             status: document.querySelector('input[name="status"]:checked').value
         };
 
-        const response = await fetch(ATT_API, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
+        try {
+            const response = await fetch(ATT_API, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify(data)
+            });
 
-        if (response.ok) {
-            Swal.fire({
-                icon: 'success',
-                title: 'Marked!',
-                text: 'Attendance recorded successfully.',
-                timer: 1500,
-                showConfirmButton: false,
-                position: 'top-end',
-                toast: true
-            });
-            loadAttendance();
-        } else {
-            const errorData = await response.json();
-            // Handle specific "unique_together" error or generic ones
-            let msg = errorData.non_field_errors ? errorData.non_field_errors[0] : "Invalid data or Duplicate record.";
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: msg
-            });
+            if (response.ok) {
+                showToast('Attendance recorded successfully!');
+                
+                // Clear the form but keep the date as today for ease of use
+                document.getElementById('attEmpId').value = '';
+                document.getElementById('attDate').value = today;
+                
+                loadAttendance();
+            } else {
+                const errorData = await response.json();
+                let msg = errorData.non_field_errors 
+                            ? errorData.non_field_errors[0] 
+                            : "Record already exists or invalid data.";
+                showToast(msg, 'error');
+            }
+        } catch (error) {
+            showToast("Server connection error.", "error");
         }
     });
 
+    // Initialize Page Data
     loadEmployeeOptions();
     loadAttendance();
 </script>
