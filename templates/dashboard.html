@@ -1,146 +1,198 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="mb-8">
-    <h2 class="text-3xl font-bold text-gray-800 tracking-tight">Admin Dashboard</h2>
-    <p class="text-gray-500 mt-1 text-sm">Overview of today's HR metrics and daily summary.</p>
-</div>
-
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-    <div class="bg-white rounded-2xl shadow-sm hover:shadow-md p-6 border border-gray-100 flex items-center transition-all transform hover:-translate-y-1">
-        <div class="w-14 h-14 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-2xl mr-4 shadow-inner">
-            <i class="fa-solid fa-users"></i>
-        </div>
-        <div>
-            <p class="text-sm text-gray-500 font-medium uppercase tracking-wider text-xs mb-1">Total Employees</p>
-            <h3 class="text-3xl font-bold text-gray-800" id="statTotal">-</h3>
-        </div>
-    </div>
-
-    <div class="bg-white rounded-2xl shadow-sm hover:shadow-md p-6 border border-gray-100 flex items-center transition-all transform hover:-translate-y-1">
-        <div class="w-14 h-14 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl mr-4 shadow-inner">
-            <i class="fa-solid fa-user-check"></i>
-        </div>
-        <div>
-            <p class="text-sm text-gray-500 font-medium uppercase tracking-wider text-xs mb-1">Present Today</p>
-            <h3 class="text-3xl font-bold text-gray-800" id="statPresent">-</h3>
-        </div>
-    </div>
-
-    <div class="bg-white rounded-2xl shadow-sm hover:shadow-md p-6 border border-gray-100 flex items-center transition-all transform hover:-translate-y-1">
-        <div class="w-14 h-14 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center text-2xl mr-4 shadow-inner">
-            <i class="fa-solid fa-user-xmark"></i>
-        </div>
-        <div>
-            <p class="text-sm text-gray-500 font-medium uppercase tracking-wider text-xs mb-1">Absent Today</p>
-            <h3 class="text-3xl font-bold text-gray-800" id="statAbsent">-</h3>
-        </div>
-    </div>
-
-    <div class="bg-white rounded-2xl shadow-sm hover:shadow-md p-6 border border-gray-100 flex items-center transition-all transform hover:-translate-y-1">
-        <div class="w-14 h-14 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center text-2xl mr-4 shadow-inner">
-            <i class="fa-solid fa-clock-rotate-left"></i>
-        </div>
-        <div>
-            <p class="text-sm text-gray-500 font-medium uppercase tracking-wider text-xs mb-1">Pending Action</p>
-            <h3 class="text-3xl font-bold text-gray-800" id="statUnmarked">-</h3>
-        </div>
+<div class="mb-6 flex justify-between items-end">
+    <div>
+        <h2 class="text-2xl font-bold text-gray-800">Admin Dashboard</h2>
+        <p class="text-xs text-gray-500 mt-1">Overview of today's HR metrics.</p>
     </div>
 </div>
 
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+{% include "components/error_banner.html" with banner_id="dashboardError" retry_function="loadStats()" %}
+
+{% include "components/onboarding_empty_state.html" %}
+
+<div id="mainDashboardContent" class="hidden fade-in">
     
-    <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-        <div class="flex justify-between items-center mb-6">
-            <h4 class="font-bold text-gray-800 text-lg">Attendance Overview (Today)</h4>
-            <span class="text-xs bg-gray-100 text-gray-600 px-3 py-1 rounded-full font-medium"><i class="fa-solid fa-circle text-indigo-500 mr-1 text-[10px]"></i> Live Data</span>
+    <div id="skeletonGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+        {% include "components/loading_skeleton.html" %}
+        {% include "components/loading_skeleton.html" %}
+        {% include "components/loading_skeleton.html" %}
+        {% include "components/loading_skeleton.html" %}
+    </div>
+
+    <div id="statsGrid" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+        
+        <div class="bg-white rounded-xl shadow-sm hover:shadow-md p-4 border border-gray-100 flex items-center transition-all">
+            <div class="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xl mr-4">
+                <i class="fa-solid fa-users"></i>
+            </div>
+            <div>
+                <p class="text-sm text-gray-500 font-medium mb-1">Total Employees</p>
+                <h3 class="text-2xl font-bold text-gray-800" id="statTotal">0</h3>
+            </div>
         </div>
-        <div class="relative h-64 w-full flex justify-center">
-            <canvas id="attendanceChart"></canvas>
+
+        <div class="bg-white rounded-xl shadow-sm hover:shadow-md p-4 border border-gray-100 flex items-center transition-all">
+            <div class="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl mr-4">
+                <i class="fa-solid fa-user-check"></i>
+            </div>
+            <div>
+                <p class="text-sm text-gray-500 font-medium mb-1">Present Today</p>
+                <h3 class="text-2xl font-bold text-gray-800" id="statPresent">0</h3>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm hover:shadow-md p-4 border border-gray-100 flex items-center transition-all">
+            <div class="w-12 h-12 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center text-xl mr-4">
+                <i class="fa-solid fa-user-xmark"></i>
+            </div>
+            <div>
+                <p class="text-sm text-gray-500 font-medium mb-1">Absent Today</p>
+                <h3 class="text-2xl font-bold text-gray-800" id="statAbsent">0</h3>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm hover:shadow-md p-4 border border-gray-100 flex items-center transition-all">
+            <div class="w-12 h-12 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center text-xl mr-4">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+            </div>
+            <div>
+                <p class="text-sm text-gray-500 font-medium mb-1">Pending Action</p>
+                <h3 class="text-2xl font-bold text-gray-800" id="statUnmarked">0</h3>
+            </div>
         </div>
     </div>
 
-    <div class="bg-gradient-to-br from-indigo-900 to-indigo-950 p-8 rounded-2xl shadow-lg text-white flex flex-col justify-between relative overflow-hidden">
-        <i class="fa-solid fa-bolt absolute -bottom-4 -right-4 text-indigo-800/30 text-9xl"></i>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        <div class="relative z-10">
-            <h4 class="font-bold text-2xl mb-2">Quick Actions</h4>
-            <p class="text-indigo-200 text-sm mb-8">Manage your daily HR tasks efficiently without leaving the dashboard.</p>
+        <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+            <div class="flex justify-between items-center mb-6">
+                <h4 class="text-lg font-semibold text-gray-800">Attendance Overview</h4>
+                <span class="text-xs bg-gray-50 text-gray-500 border border-gray-200 px-3 py-1 rounded-full"><i class="fa-solid fa-circle text-indigo-500 mr-1 text-[8px]"></i> Today</span>
+            </div>
             
-            <div class="space-y-4">
-                <a href="/employees/" class="block w-full bg-white/10 hover:bg-white/20 border border-white/10 transition-all p-4 rounded-xl flex items-center shadow-sm backdrop-blur-sm group">
-                    <div class="bg-white/20 p-2 rounded-lg mr-4 group-hover:scale-110 transition-transform">
-                        <i class="fa-solid fa-user-plus w-5 text-center"></i>
-                    </div>
-                    <span class="font-medium tracking-wide text-sm">Add New Employee</span>
-                    <i class="fa-solid fa-chevron-right ml-auto text-xs opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all"></i>
-                </a>
+            <div id="chartEmptyState" class="hidden h-64 flex flex-col items-center justify-center text-center">
+                <i class="fa-regular fa-calendar-xmark text-4xl text-gray-300 mb-3"></i>
+                <p class="text-sm font-medium text-gray-600">No attendance marked yet.</p>
+                <p class="text-xs text-gray-400 mt-1">Head over to the attendance tab to update records.</p>
+            </div>
+
+            <div id="chartContainer" class="relative h-64 w-full flex justify-center hidden">
+                <canvas id="attendanceChart"></canvas>
+            </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-indigo-900 to-indigo-950 p-6 rounded-xl shadow-md text-white flex flex-col justify-between relative overflow-hidden">
+            <i class="fa-solid fa-bolt absolute -bottom-4 -right-4 text-indigo-800/30 text-9xl"></i>
+            <div class="relative z-10">
+                <h4 class="text-lg font-semibold mb-2">Quick Actions</h4>
+                <p class="text-indigo-200 text-xs mb-6">Manage daily tasks efficiently.</p>
                 
-                <a href="/attendance-ui/" class="block w-full bg-white/10 hover:bg-white/20 border border-white/10 transition-all p-4 rounded-xl flex items-center shadow-sm backdrop-blur-sm group">
-                    <div class="bg-white/20 p-2 rounded-lg mr-4 group-hover:scale-110 transition-transform">
-                        <i class="fa-solid fa-clipboard-check w-5 text-center"></i>
-                    </div>
-                    <span class="font-medium tracking-wide text-sm">Mark Attendance</span>
-                    <i class="fa-solid fa-chevron-right ml-auto text-xs opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all"></i>
-                </a>
+                <div class="space-y-3">
+                    <a href="/employees/" class="bg-white/10 hover:bg-white/20 border border-white/10 transition-all p-3 rounded-lg flex items-center shadow-sm backdrop-blur-sm group">
+                        <div class="bg-white/20 p-2 rounded w-8 h-8 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-user-plus text-xs"></i>
+                        </div>
+                        <span class="font-medium text-sm">Add Employee</span>
+                        <i class="fa-solid fa-arrow-right ml-auto text-xs opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all"></i>
+                    </a>
+                    
+                    <a href="/attendance-ui/" class="bg-white/10 hover:bg-white/20 border border-white/10 transition-all p-3 rounded-lg flex items-center shadow-sm backdrop-blur-sm group">
+                        <div class="bg-white/20 p-2 rounded w-8 h-8 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-clipboard-check text-xs"></i>
+                        </div>
+                        <span class="font-medium text-sm">Mark Attendance</span>
+                        <i class="fa-solid fa-arrow-right ml-auto text-xs opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all"></i>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 </div>
-
 {% endblock %}
 
 {% block scripts %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
+    let myChart = null; 
+
     async function loadStats() {
+        document.getElementById('dashboardError').classList.add('hidden');
+        document.getElementById('mainDashboardContent').classList.remove('hidden');
+        document.getElementById('statsGrid').classList.add('hidden');
+        document.getElementById('skeletonGrid').classList.remove('hidden');
+        document.getElementById('onboardingState').classList.add('hidden');
+
         try {
             const res = await fetch('/api/stats/');
+            
+            if (!res.ok) throw new Error('Failed to fetch data');
             const data = await res.json();
 
-            // Animate Numbers (Simple counter effect)
-            animateValue("statTotal", 0, data.total_employees, 1000);
-            animateValue("statPresent", 0, data.present_today, 1000);
-            animateValue("statAbsent", 0, data.absent_today, 1000);
-            animateValue("statUnmarked", 0, data.unmarked, 1000);
+            document.getElementById('skeletonGrid').classList.add('hidden');
 
-            // Render Chart
-            const ctx = document.getElementById('attendanceChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Present', 'Absent', 'Pending'],
-                    datasets: [{
-                        data: [data.present_today, data.absent_today, data.unmarked],
-                        backgroundColor: ['#10b981', '#f43f5e', '#f59e0b'], // Emerald, Rose, Amber to match Tailwind colors
-                        borderWidth: 0,
-                        hoverOffset: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '70%', // Makes the donut thinner and more modern
-                    plugins: {
-                        legend: { 
-                            position: 'bottom',
-                            labels: {
-                                padding: 20,
-                                usePointStyle: true,
-                                font: { family: "'Poppins', sans-serif", size: 12 }
-                            }
-                        }
-                    }
-                }
-            });
+            if (data.total_employees === 0) {
+                document.getElementById('mainDashboardContent').classList.add('hidden');
+                document.getElementById('onboardingState').classList.remove('hidden');
+                document.getElementById('onboardingState').classList.add('flex');
+                return; 
+            }
+
+            document.getElementById('statsGrid').classList.remove('hidden');
+
+            animateValue("statTotal", 0, data.total_employees, 800);
+            animateValue("statPresent", 0, data.present_today, 800);
+            animateValue("statAbsent", 0, data.absent_today, 800);
+            animateValue("statUnmarked", 0, data.unmarked, 800);
+
+            if (data.present_today === 0 && data.absent_today === 0) {
+                document.getElementById('chartContainer').classList.add('hidden');
+                document.getElementById('chartEmptyState').classList.remove('hidden');
+            } else {
+                document.getElementById('chartEmptyState').classList.add('hidden');
+                document.getElementById('chartContainer').classList.remove('hidden');
+                renderChart(data);
+            }
 
         } catch (error) {
-            console.error("Error loading stats:", error);
+            console.error("Dashboard Error:", error);
+            document.getElementById('skeletonGrid').classList.add('hidden');
+            document.getElementById('mainDashboardContent').classList.add('hidden');
+            document.getElementById('dashboardError').classList.remove('hidden');
         }
     }
 
-    // Number counting animation
+    function renderChart(data) {
+        const ctx = document.getElementById('attendanceChart').getContext('2d');
+        if (myChart) myChart.destroy(); 
+
+        myChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Present', 'Absent', 'Pending'],
+                datasets: [{
+                    data: [data.present_today, data.absent_today, data.unmarked],
+                    backgroundColor: ['#10b981', '#f43f5e', '#f59e0b'], 
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '75%', 
+                plugins: {
+                    legend: { 
+                        position: 'bottom',
+                        labels: { padding: 20, usePointStyle: true, font: { family: "'Poppins', sans-serif", size: 12 } }
+                    }
+                }
+            }
+        });
+    }
+
     function animateValue(id, start, end, duration) {
         if (start === end) {
             document.getElementById(id).innerText = end;
@@ -151,14 +203,11 @@
             if (!startTimestamp) startTimestamp = timestamp;
             const progress = Math.min((timestamp - startTimestamp) / duration, 1);
             document.getElementById(id).innerText = Math.floor(progress * (end - start) + start);
-            if (progress < 1) {
-                window.requestAnimationFrame(step);
-            }
+            if (progress < 1) window.requestAnimationFrame(step);
         };
         window.requestAnimationFrame(step);
     }
 
-    // Call stats after loader finishes to ensure smooth rendering
-    setTimeout(loadStats, 400); 
+    setTimeout(loadStats, 500); 
 </script>
 {% endblock %}

@@ -39,6 +39,7 @@
                     <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Employee Profile</th>
                     <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Contact Info</th>
                     <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Department</th>
+                    <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Attendance</th>
                     <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Actions</th>
                 </tr>
             </thead>
@@ -137,9 +138,8 @@
 {% block scripts %}
 <script>
     const API_URL = '/api/employees/';
-    let allEmployees = []; // Store local copy for real-time validation and filtering
+    let allEmployees = []; 
 
-    // --- Modal Logic ---
     const modalOverlay = document.getElementById('modalOverlay');
     const modalContent = document.getElementById('modalContent');
     const form = document.getElementById('employeeForm');
@@ -184,7 +184,6 @@
         }, 300);
     }
 
-    // --- Validation Logic (Errors Only) ---
     function showMessage(fieldId, type, text) {
         const msgDiv = document.getElementById(`msg-${fieldId}`);
         const input = document.getElementById(fieldId);
@@ -195,7 +194,6 @@
             input.classList.add('border-red-500');
             input.classList.remove('border-gray-300');
         } else {
-            // Hide message completely if valid
             msgDiv.classList.add('hidden');
             input.classList.remove('border-red-500');
             input.classList.add('border-gray-300');
@@ -238,7 +236,6 @@
         empDept: (val) => val ? null : "Please select a department."
     };
 
-    // Attach Listeners for real-time validation
     ['empId', 'empName', 'empEmail', 'empMobile', 'empDept'].forEach(id => {
         document.getElementById(id).addEventListener('input', function() {
             const currentDbId = document.getElementById('dbId').value;
@@ -247,12 +244,11 @@
             if (error) {
                 showMessage(id, 'error', error);
             } else {
-                showMessage(id, 'success', ''); // Hides the message
+                showMessage(id, 'success', ''); 
             }
         });
     });
 
-    // --- Search & Filter Logic ---
     function renderTable(employeesToRender) {
         const tbody = document.getElementById('employeeTableBody');
         tbody.innerHTML = '';
@@ -290,13 +286,20 @@
                             ${emp.department}
                         </span>
                     </td>
-                    <td class="px-6 py-4 text-right text-sm font-medium">
-                        <button onclick='editEmployee(${JSON.stringify(emp).replace(/'/g, "&#39;")})' class="text-indigo-500 hover:text-indigo-700 p-2 transition bg-indigo-50 hover:bg-indigo-100 rounded-lg mr-2" title="Edit">
-                            <i class="fa-solid fa-pen-to-square"></i>
-                        </button>
-                        <button onclick="deleteEmployee(${emp.id})" class="text-red-400 hover:text-red-600 p-2 transition bg-red-50 hover:bg-red-100 rounded-lg" title="Delete">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
+                    <td class="px-6 py-4">
+                        <span class="px-2.5 py-1 inline-flex text-xs font-medium rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">
+                            <i class="fa-solid fa-medal mr-1.5 mt-0.5"></i> ${emp.total_present_days} Days Present
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <div class="flex items-center justify-end gap-2">
+                            <button onclick='editEmployee(${JSON.stringify(emp).replace(/'/g, "&#39;")})' class="text-indigo-500 hover:text-indigo-700 p-2 transition bg-indigo-50 hover:bg-indigo-100 rounded-lg focus:ring-2 focus:ring-indigo-300 outline-none" title="Edit">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <button onclick="deleteEmployee(${emp.id})" class="text-red-400 hover:text-red-600 p-2 transition bg-red-50 hover:bg-red-100 rounded-lg focus:ring-2 focus:ring-red-300 outline-none" title="Delete">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
                     </td>
                 </tr>
             `;
@@ -308,13 +311,11 @@
         const deptFilter = document.getElementById('filterDept').value;
 
         const filteredData = allEmployees.filter(emp => {
-            // Search Match (Name, Email, Mobile)
             const matchesSearch = 
                 emp.full_name.toLowerCase().includes(searchTerm) ||
                 emp.email.toLowerCase().includes(searchTerm) ||
                 (emp.mobile_number && emp.mobile_number.includes(searchTerm));
             
-            // Dept Match
             const matchesDept = deptFilter === "" || emp.department === deptFilter;
 
             return matchesSearch && matchesDept;
@@ -323,12 +324,10 @@
         renderTable(filteredData);
     }
 
-    // Listeners for Search and Filter inputs
     document.getElementById('searchInput').addEventListener('input', applyFilters);
     document.getElementById('filterDept').addEventListener('change', applyFilters);
 
 
-    // --- API & Actions ---
     function showToast(msg, type = 'success') {
         const toast = document.getElementById('toast');
         const icon = document.getElementById('toastIcon');
@@ -349,7 +348,7 @@
         try {
             const response = await fetch(API_URL);
             allEmployees = await response.json(); 
-            applyFilters(); // Renders the table while respecting any active filters
+            applyFilters(); 
         } catch (error) {
             console.error(error);
         }
@@ -366,7 +365,6 @@
         const ids = ['empId', 'empName', 'empEmail', 'empMobile', 'empDept'];
         let hasError = false;
 
-        // Force validation on all fields before submit
         ids.forEach(id => {
             const val = document.getElementById(id).value;
             const err = validators[id](val, dbId);

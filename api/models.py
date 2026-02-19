@@ -4,7 +4,7 @@ class Employee(models.Model):
     employee_id = models.CharField(max_length=10, unique=True)
     full_name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
-    mobile_number = models.CharField(max_length=15, unique=True, null=True, blank=True) # New Field
+    mobile_number = models.CharField(max_length=15, unique=True, null=True, blank=True)
     department = models.CharField(max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)
 

@@ -15,18 +15,16 @@
         background-color: #f3f4f6;
       }
       
-      /* Sidebar Navigation Links */
       .sidebar-link {
         transition: all 0.3s ease;
       }
       .sidebar-link:hover,
       .sidebar-link.active {
         background-color: rgba(255, 255, 255, 0.15);
-        border-left: 4px solid #818cf8; /* Light Indigo border */
+        border-left: 4px solid #818cf8; 
         padding-left: 1.2rem;
       }
 
-      /* Smooth fade in for content */
       .fade-in {
         animation: fadeIn 0.5s ease-in-out;
       }
@@ -35,7 +33,6 @@
         to { opacity: 1; transform: translateY(0); }
       }
 
-      /* Page Loader Styles */
       #page-loader {
         position: fixed;
         inset: 0;
@@ -135,7 +132,6 @@
     </main>
 
     <script>
-        // --- Loader Logic ---
         window.addEventListener('load', function() {
             const loader = document.getElementById('page-loader');
             loader.style.opacity = '0';
@@ -145,21 +141,18 @@
             }, 400); 
         });
 
-        // --- Mobile Sidebar Toggle Logic ---
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const backdrop = document.getElementById('sidebarBackdrop');
             
-            // Toggle sidebar translation
             sidebar.classList.toggle('-translate-x-full');
             
-            // Toggle backdrop visibility & opacity for smooth fade
             if (backdrop.classList.contains('hidden')) {
                 backdrop.classList.remove('hidden');
                 setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
             } else {
                 backdrop.classList.add('opacity-0');
-                setTimeout(() => backdrop.classList.add('hidden'), 300); // Wait for transition
+                setTimeout(() => backdrop.classList.add('hidden'), 300); 
             }
         }
     </script>
